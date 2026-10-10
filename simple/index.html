@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新手開發團隊安全開發實戰指引 (SSDLC Guide)</title>
+  <style>
+    :root {
+      --bg: #f9f7f4;
+      --card-bg: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #555555;
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --accent: #2563eb;
+      --success: #166534;
+      --success-bg: #f0fdf4;
+      --danger: #991b1b;
+      --danger-bg: #fef2f2;
+      --border: #e5e7eb;
+      --code-bg: #1e1e1e;
+      --code-text: #d4d4d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.68;
+      letter-spacing: 0;
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+      text-wrap: balance;
+    }
+
+    .official-nav {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-link:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 2rem 1.75rem;
+      margin-bottom: 2.25rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-wrap: balance;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #334155;
+    }
+
+    /* 圖片展示響應式區塊 */
+    .infographic-wrapper {
+      margin: 1.75rem 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      text-align: center;
+    }
+
+    .infographic-wrapper picture img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .infographic-caption {
+      padding: 0.65rem 1rem;
+      font-size: 0.88rem;
+      color: #64748b;
+      background: #ffffff;
+      border-top: 1px solid #f1f5f9;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* 程式碼與對照卡片 */
+    .code-comparison {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+      width: 100%;
+    }
+
+    .code-box {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      max-width: 100%;
+    }
+
+    .code-header {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .code-box.bad .code-header {
+      background: #fee2e2;
+      color: #991b1b;
+      border-bottom: 1px solid #fca5a5;
+    }
+
+    .code-box.good .code-header {
+      background: #dcfce7;
+      color: #166534;
+      border-bottom: 1px solid #86efac;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      box-sizing: border-box;
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    }
+
+    code {
+      font-family: inherit;
+      word-break: break-word;
+    }
+
+    pre code {
+      word-break: normal;
+      white-space: pre;
+    }
+
+    /* 卡片與重點提示 */
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: #f8fafc;
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+
+    .callout.danger {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .callout.tip {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    /* 格狀字典卡片 */
+    .dict-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    .dict-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.15rem;
+    }
+
+    .dict-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .dict-metaphor {
+      font-size: 0.95rem;
+      color: #2563eb;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .dict-desc {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* 檢核表 Checkbox */
+    .checklist {
+      list-style: none;
+      margin: 1.25rem 0;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      margin-top: 0.25rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #64748b;
+      font-size: 0.88rem;
+    }
+
+    /* 手機與窄螢幕最佳化 */
+    @media (max-width: 640px) {
+      body {
+        padding: 0.75rem 0.5rem;
+      }
+      h1 {
+        font-size: 1.7rem;
+      }
+      section {
+        padding: 1.35rem 1rem;
+        border-radius: 12px;
+      }
+      .btn-link {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+  <!-- Mermaid.js for 直式流程圖 -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      flowchart: {
+        curve: 'basis',
+        useMaxWidth: true
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- 頁頭 -->
+    <header>
+      <div class="badge-bar">
+        <span class="badge">SSDLC 實戰手冊</span>
+        <span class="badge">新手開發友善</span>
+        <span class="badge">極簡白話</span>
+        <span class="badge">準時下班指南</span>
+      </div>
+      <h1>新手開發團隊安全開發實戰指引</h1>
+      <p class="subtitle">告別冰冷法條與看不懂的檢測報告。用 4 個肌肉記憶把好安全關卡，一次就寫對，安心不加班！</p>
+      
+      <div class="official-nav">
+        <a href="../index.html" class="btn-link">
+          📘 前往「政府完整 SSDLC 作業規範書」
+        </a>
+        <a href="../downloads/附表十_資通系統防護基準.pdf" class="btn-link" download>
+          📥 下載官方「附表十：防護基準」
+        </a>
+      </div>
+    </header>
+
+    <!-- 第 0 章：觀念翻轉 -->
+    <section id="chapter-0">
+      <h2>🌱 第 0 章：觀念翻轉 — 資安不是找碴，是讓你準時下班</h2>
+      <p>老實說，身為開發者，誰不曾暗自討厭過資安？</p>
+      <p>每次辛辛苦苦熬夜把功能刻完，PM 點頭、QA 測過，眼看著終於可以開心結案、準備去吃頓好料，資安團隊（或掃描工具）突然丟來一份幾十頁滿江紅的報告。上面滿滿看不懂的名詞（什麼 XSS、SQLi、BOLA），限期 3 天修補。心裡難免冒出一句：「這功能明明很順啊！誰沒事會這樣亂打？」</p>
+      <p>結果就是：被退件、修一堆看不懂的漏洞、加班救火，原本以為可以結案的專案硬是拖了兩個禮拜。這其實就是我們以前常走的冤枉路。</p>
+
+      <div class="callout tip">
+        <strong>💡 Shift Left（左移）的真諦：</strong><br>
+        寫 Code 當下順手改好 = <strong>花 3 分鐘</strong>。<br>
+        上線正式機被打爆或通報 = 停機、救火、熬夜修復、寫檢討報告，<strong>花 3 個禮拜</strong>。<br>
+        資安不是來找碴的，它是確保你週末能安心睡覺、準時下班的護身符！
+      </div>
+
+      <!-- 資訊圖 1：Shift Left 對比圖 -->
+      <div class="infographic-wrapper">
+        <picture>
+          <source media="(max-width: 640px)" srcset="images/shift_left_9_16.png">
+          <img src="images/shift_left_16_9.png" alt="Shift Left 提早把關 vs 上線救火成本對比圖" loading="lazy">
+        </picture>
+        <div class="infographic-caption">
+          ▲ 資訊圖解：寫 Code 順手花 3 分鐘補上防護，省下上線後 3 星期爆肝救火（直式與橫式自適應）
+        </div>
+      </div>
+
+      <p>你不必成為神級駭客，更不用學著寫黑客工具。只要在寫程式的日常中養成 <strong>4 個肌肉記憶</strong>，資安檢測就能輕鬆一次過關。</p>
+    </section>
+
+    <!-- 第 1 章：專有名詞白話字典 -->
+    <section id="chapter-1">
+      <h2>📖 第 1 章：專有名詞白話字典 — 5 分鐘聽懂資安黑話</h2>
+      <p>剛接觸資安，最怕看到一堆縮寫。記住以下這 5 個傳神的生活場景，你就能聽懂 90% 的資安對話：</p>
+
+      <div class="dict-grid">
+        
+        <div class="dict-card">
+          <div class="dict-title">🔍 SAST（靜態源碼檢測 / 白箱）</div>
+          <div class="dict-metaphor">生活比喻：看食譜有沒有寫錯</div>
+          <div class="dict-desc">
+            工具直接讀你的 Source Code（不把程式跑起來），一行一行挑語法錯誤或危險寫法（例如把密碼直接寫死在程式裡）。就像編輯在審稿挑錯字。
+          </div>
+        </div>
+
+        <div class="dict-card">
+          <div class="dict-title">💥 DAST（動態弱點掃描 / 黑箱）</div>
+          <div class="dict-metaphor">生活比喻：在餐廳門口踹門、丟石頭試試窗戶會不會破</div>
+          <div class="dict-desc">
+            工具不看任何原始碼，把系統架起來後，模擬外部駭客對你的網址瘋狂狂發怪異 HTTP 封包，測試輸入框塞特殊符號會不會讓系統噴錯或吐出機密。
+          </div>
+        </div>
+
+        <div class="dict-card">
+          <div class="dict-title">📦 SCA 與 SBOM（軟體組成分析與物料清單）</div>
+          <div class="dict-metaphor">生活比喻：查食品成分標籤與過期原料</div>
+          <div class="dict-desc">
+            檢查專案 <code>package.json</code> 或 <code>requirements.txt</code> 引用的開源套件有沒有已知的 CVE 漏洞。SBOM 就是整張清楚的成分清單。
+          </div>
+        </div>
+
+        <div class="dict-card">
+          <div class="dict-title">🕵️ 滲透測試（Penetration Testing）</div>
+          <div class="dict-metaphor">生活比喻：請合格保全或白帽特警拿鐵撬實地搶劫演練</div>
+          <div class="dict-desc">
+            真人白帽駭客上陣！不靠死板工具，專門用人類的邏輯組合拳打系統漏洞（例如改 URL 偷看別人訂單、重複洗優惠券）。
+          </div>
+        </div>
+
+        <div class="dict-card">
+          <div class="dict-title">🎭 去識別化（De-identification / 脫敏）</div>
+          <div class="dict-metaphor">生活比喻：演員彩排時拿假道具代幣，不拿真鈔</div>
+          <div class="dict-desc">
+            把真實個資（身分證、信用卡）替換為假資料、打馬賽克或代幣化。測試環境絕對不能存放真實個資，外洩風險直接歸零。
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 第 2 章：寫 Code 防禦實戰 -->
+    <section id="chapter-2">
+      <h2>🛡️ 第 2 章：寫 Code 實戰 — 開發者的防禦四部曲</h2>
+      <p>這是工程師的核心基本功。以下四道門禁守好，90% 常見的高風險弱點立刻瓦解：</p>
+
+      <!-- 資訊圖 2：防禦四部曲門禁 -->
+      <div class="infographic-wrapper">
+        <picture>
+          <source media="(max-width: 640px)" srcset="images/defense_gates_9_16.png">
+          <img src="images/defense_gates_16_9.png" alt="工程師安全防禦四道門禁圖解" loading="lazy">
+        </picture>
+        <div class="infographic-caption">
+          ▲ 資訊圖解：輸入檢驗門、權限鑰匙、金庫密鑰、套件體檢站（防禦四道門禁）
+        </div>
+      </div>
+
+      <h3>門禁一：輸入驗證與過濾（永遠不信前端輸入）</h3>
+      <p>前端的表單驗證只是 UX 防呆，擋不住 Postman 或駭客腳本。後端必須把任何外部傳入的資料（Query, Body, Header）都視為未爆彈！</p>
+
+      <div class="code-comparison">
+        <div class="code-box bad">
+          <div class="code-header">❌ 玩火示範：字串拼接 SQL（門戶大開）</div>
+          <pre><code>// 收到前端 user_name = "admin' --"
+const sql = `SELECT * FROM users WHERE username = '${req.body.user_name}'`;
+// 實際執行：SELECT * FROM users WHERE username = 'admin' --'
+// 密碼檢查直接被 -- 註解掉，隨便就能登入！</code></pre>
+        </div>
+
+        <div class="code-box good">
+          <div class="code-header">✅ 安全防禦：參數化查詢 / ORM（指令與資料徹底分離）</div>
+          <pre><code>// 1. Prepared Statement 寫法：資料永遠只當純資料處理
+const sql = 'SELECT * FROM users WHERE username = ?';
+await db.execute(sql, [req.body.user_name]);
+
+// 2. ORM 寫法（例如 Prisma / TypeORM）：天然免疫
+const user = await prisma.user.findUnique({
+  where: { username: req.body.user_name }
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="callout danger">
+        <strong>⚠️ SSRF（伺服器端請求偽造）：別讓伺服器當駭客的免洗轉跳板！</strong><br>
+        如果系統有「輸入 URL 幫你抓網頁截圖或縮圖」的功能，駭客若輸入 <code>http://169.254.169.254/latest/meta-data/</code>（雲端金庫）或 <code>http://127.0.0.1/admin</code>，你的伺服器就會用自己的內網身份幫他抓出機密！<br>
+        <strong>防禦秘訣：</strong>只允許 <code>http/https</code> 白名單網域，嚴格阻絕內網 IP（<code>127.0.0.1</code>、<code>10.x</code>、<code>192.168.x</code>、<code>169.254.x</code>）。
+      </div>
+
+      <h3>門禁二：認證與授權防漏（不只要登入，更要看是不是你的）</h3>
+      <p>很多工程師以為只要檢查使用者有 JWT Token 就安全了，結果使用者把 URL 的 <code>?order_id=1001</code> 改成 <code>1002</code>，立刻偷看到隔壁老王的訂單（水平越權 BOLA / IDOR）！</p>
+
+      <div class="code-comparison">
+        <div class="code-box bad">
+          <div class="code-header">❌ 玩火示範：只查 ID，沒查是不是本人</div>
+          <pre><code>// 雖然登入了，但只查 order_id，誰改網址誰就能看！
+SELECT * FROM orders WHERE id = :order_id;</code></pre>
+        </div>
+
+        <div class="code-box good">
+          <div class="code-header">✅ 安全防禦：雙重鎖定（綁定登入者 ID）</div>
+          <pre><code>// 永遠加上目前登入者的 user_id！
+SELECT * FROM orders 
+WHERE id = :order_id AND user_id = :current_login_user_id;</code></pre>
+        </div>
+      </div>
+
+      <h3>門禁三：機密憑證不落地（嚴禁 Hardcode Token 與密碼）</h3>
+      <p>不管是 DB 密碼、AWS Key 還是第三方 API Token，<strong>絕對不能寫在程式碼裡 commit 進 Git</strong>！即使是 Private Repo，歷史紀錄也可能外洩。</p>
+      <div class="callout tip">
+        <strong>正確做法：</strong>本機放 <code>.env</code> 並加入 <code>.gitignore</code>，正式環境使用環境變數（Environment Variables）注入。推薦團隊在 CI 加上 <code>git-secrets</code> 或 <code>trufflehog</code> 自動攔截！
+      </div>
+
+      <h3>門禁四：相依套件健康檢查（別把有毒的輪子裝進車裡）</h3>
+      <p>現代軟體 80% 的程式碼來自第三方開源套件。日常養成習慣：</p>
+      <pre><code># Node.js 團隊：
+npm audit
+npm audit fix
+
+# Python 團隊：
+pip install pip-audit
+pip-audit</code></pre>
+    </section>
+
+    <!-- 第 3 章：測試環境與資料安全 -->
+    <section id="chapter-3">
+      <h2>🧪 第 3 章：測試實戰 — 千萬別把正式機資料直接 dump 回來！</h2>
+      <p>很多團隊為了解 Bug 方便，最常做的危險動作就是直接下 <code>pg_dump</code> 或 <code>mysqldump</code>，把正式 DB 一鍵倒回測試機。結果外包筆電掉了、測試機忘記關公網，瞬間造成百萬筆個資外洩，踩中《個人資料保護法》與政府《附表十》的重大紅線！</p>
+
+      <!-- 資訊圖 3：脫敏清洗流水線 -->
+      <div class="infographic-wrapper">
+        <picture>
+          <source media="(max-width: 640px)" srcset="images/masking_pipeline_9_16.png">
+          <img src="images/masking_pipeline_16_9.png" alt="測試資料去識別化清洗流水線圖解" loading="lazy">
+        </picture>
+        <div class="infographic-caption">
+          ▲ 資訊圖解：正式資料嚴禁直倒測試機！四道清洗工序讓測試環境零風險（直式與橫式自適應）
+        </div>
+      </div>
+
+      <h3>測試資料脫敏（去識別化）四大招</h3>
+      <div class="dict-grid">
+        <div class="dict-card">
+          <div class="dict-title">🟢 招式一：假資料生成器（首選推薦）</div>
+          <div class="dict-desc">使用 <code>faker-js</code> 或 Python <code>Faker</code> 自動產生假中文姓名與台灣電話。從頭到尾沒碰真資料，外洩風險真正為零！</div>
+        </div>
+        <div class="dict-card">
+          <div class="dict-title">🟢 招式二：遮罩掩蓋（Masking）</div>
+          <div class="dict-desc">身分證改為 <code>A123***789</code>、手機改為 <code>0912***456</code>。保留資料長度與格式，排版測試超方便。</div>
+        </div>
+        <div class="dict-card">
+          <div class="dict-title">🟡 招式三：雜湊替換（Hashing / Token）</div>
+          <div class="dict-desc">不可逆轉成代碼，適合需要測試同一用戶唯一性與重複行為的測試場景。</div>
+        </div>
+        <div class="dict-card">
+          <div class="dict-title">🟡 招式四：隨機打散（Shuffling）</div>
+          <div class="dict-desc">把資料庫的姓名與地址重新隨機洗牌配對。A 先生配上 B 小姐的地址，失去真實對應意義。</div>
+        </div>
+      </div>
+
+      <h3>測試時多測測「壞蛋路徑」（Negative Testing）</h3>
+      <p>測試別只測正常人會怎麼按，多測三種壞人亂輸的情境：</p>
+      <ul style="margin-left: 1.5rem; color: #334155;">
+        <li><strong>長度超大</strong>：只能填 50 字的欄位，直接塞 10 萬字進去，看會不會把記憶體灌爆當機（DoS）。</li>
+        <li><strong>特殊字元</strong>：輸入 <code>' " < > ; \0</code>，看系統會不會原封不動噴出資料庫錯誤（揭露系統架構）。</li>
+        <li><strong>邊界負數</strong>：電商購買數量故意輸入 <code>-1</code>，看會不會沒扣款反而「退錢」給你！</li>
+      </ul>
+    </section>
+
+    <!-- 第 4 章：驗收三大魔王通關 -->
+    <section id="chapter-4">
+      <h2>👾 第 4 章：驗收通關 — 拆解資安檢測三大魔王</h2>
+      <p>面對驗收檢測不用慌，搞懂背後的原理與規則，你就能從容應對：</p>
+
+      <!-- 資訊圖 4：三大檢測魔王 -->
+      <div class="infographic-wrapper">
+        <picture>
+          <source media="(max-width: 640px)" srcset="images/audit_trio_9_16.png">
+          <img src="images/audit_trio_16_9.png" alt="資安驗收三大魔王拆解圖" loading="lazy">
+        </picture>
+        <div class="infographic-caption">
+          ▲ 資訊圖解：白箱源碼檢測、黑箱弱點掃描、真人滲透測試通關全景
+        </div>
+      </div>
+
+      <h3>魔王一：白箱源碼檢測（Fortify / Checkmarx）</h3>
+      <p><strong>收到滿江紅報告怎麼辦？</strong> 工具原則是「寧可錯殺，不願放過」。</p>
+      <ul>
+        <li><strong>修補底線</strong>：<strong>High 與 Critical 風險必須全數歸零</strong>，這是標案基本驗收門檻。</li>
+        <li><strong>如何提出「誤判說明（False Positive）」？</strong><br>
+          如果工具報 SQLi，但該變數其實只允許數字且你在前一層已經用 Regex <code>^\d+$</code> 鎖死，這就是誤判。<br>
+          <strong>千萬不要只寫「這不會發生」！</strong> 請畫出資料流、標註防護代碼行號、具體說明駭客無法注入的理由，審查員才會爽快簽核。
+        </li>
+      </ul>
+
+      <h3>魔王二：動態弱點掃描（AppScan / WebInspect / ZAP）</h3>
+      <p>黑箱掃描前，團隊務必準備妥當：</p>
+      <ol style="margin-left: 1.5rem; color: #334155;">
+        <li><strong>提供足夠權限的測試帳號</strong>（會員與管理員各一組）。</li>
+        <li><strong>測試環境暫時將掃描機 IP 放行，避免 WAF 擋住</strong>：如果防護沒關，掃描機被封鎖會跑出「0 漏洞」的假象，驗收時會被退件重測！</li>
+        <li><strong>提供 OpenAPI / Swagger 文件</strong>：前後端分離時，爬蟲爬不到 API，必須主動提供端點規格。</li>
+      </ol>
+
+      <h3>魔王三：真人滲透測試（白帽攻防實戰）</h3>
+      <p>白帽駭客專打「業務邏輯漏洞」（例如篡改價格、越權偷看資料、高頻發送封包搶優惠券）。</p>
+      <div class="callout tip">
+        <strong>複測修補關鍵：</strong><br>
+        不要只修報告寫的那一行！駭客回報訂單 A 有越權，你要全面清查系統內所有訂單與查詢 API。修好後自己先開 Postman 改參數自測一次，確定回傳 <code>403 Forbidden</code> 再申請複測。
+      </div>
+    </section>
+
+    <!-- 第 5 章：上線前極簡 Checklists -->
+    <section id="chapter-5">
+      <h2>✅ 第 5 章：上線前極簡 Checklists（5 分鐘防呆自我檢核）</h2>
+      <p>上線前一晚不要慌，團隊坐下來花 5 分鐘逐一勾選以下 12 條黃金守則：</p>
+
+      <ul class="checklist">
+        <li class="checklist-item">
+          <input type="checkbox" id="c1">
+          <label for="c1"><strong>1. 無寫死機敏憑證</strong>：Code 裡無 Hardcode 任何密碼、API Key、DB 連線字串或 JWT Secret（已全數移至環境變數）。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c2">
+          <label for="c2"><strong>2. 測試資料已清空</strong>：資料庫中的 <code>test@test.com</code>、預設密碼 <code>123456</code> 等假資料已徹底清除。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c3">
+          <label for="c3"><strong>3. 關閉詳細 Debug 模式</strong>：系統出錯時只顯示友善的 500 頁面，絕不噴出 Stack Trace、檔案路徑或資料庫錯誤字串。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c4">
+          <label for="c4"><strong>4. 關閉管理與測試端點</strong>：<code>phpinfo.php</code>、內部除錯 API 及 Swagger UI 已限制僅限內網訪問或移除。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c5">
+          <label for="c5"><strong>5. 授權驗證無死角</strong>：除首頁與登入頁外，所有 API 均掛上身分驗證，且查詢時皆綁定使用者 ID（防越權）。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c6">
+          <label for="c6"><strong>6. 100% 參數化查詢</strong>：資料庫互動全數使用 ORM 或 Prepared Statements，絕無字串拼湊 SQL。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c7">
+          <label for="c7"><strong>7. 輸出 HTML 跳脫處理</strong>：前端顯示使用者內容皆經跳脫處理，或由現代框架預設防護，防止 XSS。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c8">
+          <label for="c8"><strong>8. 檔案上傳嚴格驗證</strong>：上傳功能已檢查副檔名白名單、真實檔頭（Magic Number）並限制合理大小上限。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c9">
+          <label for="c9"><strong>9. 密碼強健雜湊儲存</strong>：使用者密碼已使用 Argon2 或 Bcrypt 加鹽雜湊，絕無明文或 MD5 儲存。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c10">
+          <label for="c10"><strong>10. 強制全站 HTTPS</strong>：所有網頁與 API 皆強制跳轉 HTTPS，且 TLS 憑證有效。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c11">
+          <label for="c11"><strong>11. 開源套件無重大漏洞</strong>：已執行 <code>npm audit</code> 或 <code>pip-audit</code>，無 High / Critical 已知漏洞。</label>
+        </li>
+        <li class="checklist-item">
+          <input type="checkbox" id="c12">
+          <label for="c12"><strong>12. 測試關閉的防火牆已重啟</strong>：測試期間暫時加入白名單的設定已還原，正式機 WAF 與防禦機制均已正常就緒。</label>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+      <p>© 2026 軟體安全開發與資安檢測作業指引 ｜ 務實、好啃、以工程師體驗為先</p>
+      <p style="margin-top: 0.5rem;">
+        <a href="../index.html" style="color: #2563eb; text-decoration: none;">回政府 SSDLC 正式規範首頁</a> · 
+        <a href="https://github.com/lushinshang/taiwan-gov-ssdlc-spec" style="color: #2563eb; text-decoration: none;">GitHub 專案原始碼</a>
+      </p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
