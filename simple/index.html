@@ -629,9 +629,9 @@
       <h3>這不是機關找麻煩，是法律規定的交卷條件！</h3>
       <ul>
         <li><strong>《資通安全管理法》第 9 條及施行細則第 7 條</strong>：法律明文規定公務機關委外辦理資通系統建置，機關負有<strong>「法定選任與監督義務」</strong>；受託廠商客製化開發<strong>必須出具安全性檢測證明</strong>。</li>
-        <li><strong>承辦人的苦衷</strong>：承辦人如果不跟廠商要這份檢測合格證明就直接驗收付款，稽核查到他會被記過甚至移送法辦。所以請跟承辦人站在同一陣線，把報告準備齊全，大家好交差！</li>
+        <li><strong>承辦人的職責</strong>：承辦人如果不跟廠商要這份檢測合格證明就直接驗收付款，主管機關資安稽核時將判定重大缺失並追究行政責任。因此，將報告依約備妥是讓雙方順利結案的共同底線。</li>
       </ul>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「零、遵循總則與法規條款」原文</a>
+      <a href="../index.html#sec-0" class="spec-ref">🔗 查看官方規範「零、廠商遵循總則與法遵拘束力說明」原文</a>
     </section>
 
     <!-- 壹、官方依據文件與查驗表單下載庫 -->
@@ -660,7 +660,7 @@
             <tr>
               <td><strong>附表十 防護基準</strong></td>
               <td>💻 <strong>工程師必備寶典</strong></td>
-              <td><strong>最重要的一本！</strong> 規定普級要測什麼、中高級必須強制做「源碼檢測」與「滲透測試」，檢測合格標準全看它。</td>
+              <td><strong>最重要的一本！</strong> 弱點掃描全等級必測；高防護等級強制「源碼檢測」與「滲透測試」（中級依本案契約約定實施）。</td>
               <td><a href="../downloads/附表十_資通系統防護基準.pdf" download>📥 附表十.pdf</a></td>
             </tr>
             <tr>
@@ -678,7 +678,7 @@
           </tbody>
         </table>
       </div>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「壹、官方依據文件下載庫」原文</a>
+      <a href="../index.html#sec-1" class="spec-ref">🔗 查看官方規範「壹、官方依據文件與查驗表單下載庫」原文</a>
     </section>
 
     <!-- 貳、專案執行計畫與管理規範 -->
@@ -708,7 +708,7 @@
       <h3>3. 遇到資安事故的「1 小時緊急通報 SOP」</h3>
       <div class="callout danger">
         <strong>🚨 萬一發現 Token 外洩或測試伺服器被駭，絕對嚴禁私下掩蓋！</strong><br>
-        合約規範知情後 <strong>1 小時內必須通報機關窗口</strong>（先講發生什麼事、正在隔離調查），4 小時內提送初步處置方案，72 小時內繳交根本原因分析（RCA）報告。及時通報大家一起處理，知情不報被抓到會直接被列入不良廠商！
+        依專案 SLA 約定，知情後 <strong>1 小時內必須通報機關窗口</strong>（先說明發生什麼事、正在隔離調查），4 小時內提送初步處置方案，72 小時內繳交根本原因分析（RCA）報告。及時通報大家一起處理，知情不報將依法追究違約責任！
       </div>
 
       <div class="mermaid">
@@ -721,7 +721,7 @@
           style B fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
           style D fill:#dcfce7,stroke:#10b981,stroke-width:2px
       </div>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「貳、專案執行計畫與管理規範」原文</a>
+      <a href="../index.html#proc-0" class="spec-ref">🔗 查看官方規範「專案管理先行程序 (WBS/RACI/通報機制)」原文</a>
     </section>
 
     <!-- 參、安全程式開發階段實作規範 -->
@@ -744,16 +744,17 @@
       <h3>門禁一：輸入驗證（A05 注入攻擊防禦）</h3>
       <div class="code-comparison">
         <div class="code-box bad">
-          <div class="code-header">❌ 找死寫法：字串拼接 SQL</div>
-          <pre><code>// 收到前端 username = "admin' --"
-const query = `SELECT * FROM users WHERE username = '${req.body.username}'`;
-// 密碼檢查直接被 -- 註解掉，任何人都能用 admin 登入！</code></pre>
+          <div class="code-header">❌ 危險寫法：字串拼接 SQL</div>
+          <pre><code>// 收到前端傳入 username = "admin' --" 與任意密碼
+const query = `SELECT * FROM users WHERE username = '${req.body.username}' AND password = '${req.body.password}'`;
+// 實際執行：SELECT * FROM users WHERE username = 'admin' --' AND password = 'xxx'
+// 密碼檢查直接被 -- 註解掉，任何人都能用 admin 帳號登入！</code></pre>
         </div>
         <div class="code-box good">
-          <div class="code-header">✅ 活命寫法：參數化查詢 / ORM</div>
+          <div class="code-header">✅ 安全寫法：參數化查詢 / ORM</div>
           <pre><code>// 1. Prepared Statement 參數化（資料與指令徹底分離）
-const query = 'SELECT * FROM users WHERE username = ?';
-await db.execute(query, [req.body.username]);
+const query = 'SELECT * FROM users WHERE username = ? AND password_hash = ?';
+await db.execute(query, [req.body.username, hashedPassword]);
 
 // 2. 或直接使用 ORM（Prisma / TypeORM）
 const user = await prisma.user.findUnique({
@@ -764,28 +765,26 @@ const user = await prisma.user.findUnique({
 
       <h3>門禁二：權限檢查與防範 SSRF（A01 越權存取）</h3>
       <ul>
-        <li><strong>後端必須雙重鎖定（防 BOLA / IDOR）</strong>：不要只查 <code>WHERE id = :order_id</code>，必須永遠加上 <code>WHERE id = :order_id AND user_id = :current_user_id</code>。</li>
-        <li><strong>防範伺服端請求偽造 (SSRF)</strong>：若伺服器有幫抓網頁縮圖的功能，嚴格禁止打內網 IP（<code>127.0.0.1</code>, <code>10.x</code>, <code>192.168.x</code>, <code>169.254.169.254</code>），必須設定 URL 白名單。</li>
+        <li><strong>後端必須雙重鎖定（防 BOLA / IDOR）</strong>：不要只查 <code>WHERE id = :order_id</code>，必須永遠由驗證過的 Session/Token 取得使用者身分，加上 <code>WHERE id = :order_id AND user_id = :current_user_id</code>。</li>
+        <li><strong>防範伺服端請求偽造 (SSRF)</strong>：若伺服器有抓取外部縮圖功能，單純檢查字串黑名單會被 IPv6（<code>::1</code>）、DNS Rebinding 或 HTTP 跳轉繞過。<strong>最佳實踐：設定嚴格的目的地網域白名單 ＋ 解析後 IP 固定（Pinning）＋ 禁止自動跟隨 HTTP 重新導向</strong>。</li>
       </ul>
 
       <h3>門禁三：密鑰不落地與安全組態（A02 / A04）</h3>
       <ul>
-        <li><strong>密碼存儲</strong>：嚴禁明文或 MD5，必須使用 <code>bcrypt</code>、<code>Argon2id</code> 加鹽雜湊。</li>
-        <li><strong>憑證管理</strong>：嚴禁在程式碼中 Hardcode API Key，全部抽離至 <code>.env</code> 並設定 <code>.gitignore</code>。</li>
-        <li><strong>HTTP 安全標頭</strong>：在 Nginx 或 Node.js 啟用 <code>helmet</code>，補齊 <code>Strict-Transport-Security (HSTS)</code>、<code>X-Content-Type-Options: nosniff</code> 與 CSP。</li>
-        <li><strong>A10 例外處理</strong>：設定全域 Try-Catch，500 錯誤頁面絕不把 Stack Trace 或資料庫語法印給前端。</li>
+        <li><strong>密碼存儲</strong>：嚴禁明文或 MD5，必須使用 <code>bcrypt</code> 或 <code>Argon2id</code> 加鹽雜湊。</li>
+        <li><strong>憑證管理</strong>：本機開發抽離至 <code>.env</code> 並加入 <code>.gitignore</code>；正式環境使用 Secret Manager 或容器環境變數注入，嚴禁 Commit 進 Git 紀錄。</li>
+        <li><strong>HTTP 安全標頭</strong>：在 Express 啟用 <code>helmet()</code> 或在 Nginx 設定 <code>Strict-Transport-Security</code>、<code>X-Content-Type-Options: nosniff</code> 與 CSP。</li>
+        <li><strong>A10 例外處理</strong>：設定全域錯誤捕捉中介層（Error-handling Middleware），500 錯誤頁面絕不把 Stack Trace 或資料庫語法印給前端。</li>
       </ul>
 
       <h3>門禁四：軟體供應鏈安全與產出 SBOM 清單</h3>
       <p>政府標案現在要求交出標準格式（SPDX / CycloneDX）的 <strong>SBOM（軟體物料清單）</strong>，並且<strong>嚴格禁止使用大陸廠牌資通訊產品與相依套件</strong>：</p>
-      <pre><code># 1. 日常套件安全體檢：
-npm audit
-pip-audit
+      <pre><code># 1. 一行指令產出標準 CycloneDX 格式之 SBOM 檔案（使用 Syft）：
+syft dir:. -o cyclonedx-json=sbom.json
 
-# 2. 一行指令產出標準 CycloneDX / SPDX 格式之 SBOM 檔案：
-# 使用 Syft 掃描當前專案目錄並輸出 JSON：
-syft dir:. -o cyclonedx-json=sbom.json</code></pre>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「參、安全程式開發實作」原文</a>
+# 2. 比對 NVD / OSV 資料庫確認已知 CVE 漏洞（使用 Grype）：
+grype sbom:sbom.json</code></pre>
+      <a href="../index.html#proc-1" class="spec-ref">🔗 查看官方規範「程序一：安全程式開發實作作業」原文</a>
     </section>
 
     <!-- 肆、功能與系統測試階段規範 -->
@@ -808,20 +807,20 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
       <h3>測試資料去識別化（脫敏）四大招</h3>
       <div class="dict-grid">
         <div class="dict-card">
-          <div class="dict-title">🟢 招式一：假資料生成器（首選推薦）</div>
-          <div class="dict-desc">使用 <code>faker-js</code> 或 Python <code>Faker</code>，無中生有產生假姓名與台灣手機。完全不碰真實個資，外洩風險真正為零！</div>
+          <div class="dict-title">🟢 招式一：合成假資料生成器（首選推薦）</div>
+          <div class="dict-desc">使用 <code>faker-js</code> 或 Python <code>Faker</code>，無中生有產生假姓名與台灣手機。因從未碰觸真實資料，無真實個資外洩風險，是開發測試的最佳選擇！</div>
         </div>
         <div class="dict-card">
           <div class="dict-title">🟢 招式二：遮罩掩蓋（Masking）</div>
-          <div class="dict-desc">身分證遮蔽為 <code>A123***789</code>，保留長度與版面排版測試便利。</div>
+          <div class="dict-desc">身分證遮蔽為 <code>A123***789</code>。注意：部分遮罩仍可能具識別風險，僅供畫面排版測試使用。</div>
         </div>
         <div class="dict-card">
           <div class="dict-title">🟡 招式三：雜湊代幣（Tokenization）</div>
-          <div class="dict-desc">把姓名與 Email 轉成不可逆雜湊，適合測試用戶重複登入唯一性。</div>
+          <div class="dict-desc">使用加鹽雜湊或隨機 Token 代替敏感欄位，適合測試用戶登入重複性。</div>
         </div>
         <div class="dict-card">
           <div class="dict-title">🟡 招式四：隨機打散（Shuffling）</div>
-          <div class="dict-desc">洗牌打散欄位，A 先生配上 B 小姐的電話與地址。</div>
+          <div class="dict-desc">洗牌打散欄位，A 先生配上 B 小姐的電話與地址。注意：若資料量少仍有重組風險。</div>
         </div>
       </div>
 
@@ -833,8 +832,8 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
       </ul>
 
       <h3>硬碟退租抹除：NIST SP 800-88 清除標準</h3>
-      <p>專案驗收完成後，開發雲端伺服器退租或測試硬碟汰除前，必須依 <strong>NIST SP 800-88</strong> 或 <strong>DoD 5220.22-M</strong> 標準執行安全抹除（不可只是 Shift+Delete），並由主管簽署《儲存媒體資料抹除銷毀切結書》。</p>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「肆、功能與系統測試規範」原文</a>
+      <p>專案驗收完成後，開發雲端伺服器退租或測試硬碟汰除前，必須依 <strong>NIST SP 800-88 Rev. 2</strong> 或 <strong>DoD 5220.22-M</strong> 標準執行安全清除或銷毀（不可只是 Shift+Delete），並由主管簽署《儲存媒體資料抹除銷毀切結書》。</p>
+      <a href="../index.html#proc-2" class="spec-ref">🔗 查看官方規範「程序二：功能驗證與系統整合測試作業」原文</a>
     </section>
 
     <!-- 伍、資訊安全技術檢測作業規範 -->
@@ -869,11 +868,11 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
 
       <h3>考科一：SAST 白箱源碼檢測（Fortify / Checkmarx）</h3>
       <ul>
-        <li><strong>通關標準</strong>：<strong>High / Critical 風險必須 100% 修補歸零</strong>，Medium 依約修補。</li>
-        <li><strong>如何寫出讓審查員秒簽核的「誤判報告（False Positive）」？</strong><br>
+        <li><strong>通關標準</strong>：<strong>High / Critical 風險必須 100% 修補歸零</strong>，Medium 依契約約定修補。</li>
+        <li><strong>如何提出具說服力的「誤判說明（False Positive）」？</strong><br>
           工具很常誤判。若要提誤判，<strong>千萬不要只寫「這不會發生」！</strong><br>
-          請清楚附上：<strong>(1) 變數來源資料流</strong>、<strong>(2) 程式碼所在行號</strong>、<strong>(3) 前一層已有限制理由</strong>。<br>
-          <em>範例：「第 45 行工具誤報 SQLi，但此變數在第 20 行已使用 Regex <code>^\d+$</code> 限制為純數字，無法注入惡意字串，故申請誤判除外。」</em> 審查員看到才敢放心蓋章。
+          請清楚附上：<strong>(1) 變數來源資料流</strong>、<strong>(2) 程式碼所在行號</strong>、<strong>(3) 前一層已有限制理由（如轉型為整數或已完成消毒）</strong>。<br>
+          <em>範例：「第 45 行工具誤報 SQLi，但此變數在第 20 行已轉型為整數 parseInt() 並綁定參數化查詢，無字串拼接風險，故申請誤判除外。」</em> 審查員看到才敢放心蓋章。
         </li>
       </ul>
 
@@ -888,14 +887,14 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
       <h3>考科三：真人滲透測試（白帽駭客攻堅）</h3>
       <ul>
         <li><strong>常見死穴</strong>：駭客專打工具找不到的「業務邏輯漏洞」（如越權偷看他人訂單、篡改結帳金額）。</li>
-        <li><strong>修補與複測技巧</strong>：<strong>舉一反三！</strong> 駭客報 API-A 有越權，你要全面清查整套系統的 API。修補後先用 Postman 竄改參數自測確認回傳 <code>403 Forbidden</code>，把截圖附進複測申請單，加速驗收！</li>
+        <li><strong>修補與複測技巧</strong>：<strong>舉一反三！</strong> 駭客報 API-A 有越權，你要全面清查整套系統的 API。修補後先用 Postman 竄改參數自測確認回傳已適當阻擋（如 403 或 404），把截圖附進複測申請單，加速驗收！</li>
       </ul>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「伍、資安技術檢測作業」原文</a>
+      <a href="../index.html#proc-3" class="spec-ref">🔗 查看官方規範「程序三：資訊安全技術檢測作業」原文</a>
     </section>
 
     <!-- 陸、檢測交付產出物審查與驗收門檻 -->
     <section id="sec-6">
-      <span class="section-spec-tag">對齊官方規範 ｜ 陸、檢測交付產出物審查與驗收門檻</span>
+      <span class="section-spec-tag">對齊官方規範 ｜ 參、廠商交付文件查驗對照與違約處理原則</span>
       <h2>📦 陸、結案交卷清單：驗收那天到底要交出哪些檔案？</h2>
       <p>不要等到驗收前一天才問 PM 要交什麼。請在結案前逐一備妥以下 6 份核心文件：</p>
 
@@ -910,11 +909,11 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
         </li>
         <li class="checklist-item">
           <input type="checkbox" id="ck3">
-          <label for="ck3"><strong>3. 《滲透測試報告 (PT)》及複測通過證明</strong>：中高防護等級系統必備，含漏洞 PoC 重現截圖與修補複測佐證。</label>
+          <label for="ck3"><strong>3. 《滲透測試報告 (PT)》及複測通過證明</strong>：高防護等級系統必備（中防護等級依契約約定），含漏洞 PoC 重現截圖與修補複測佐證。</label>
         </li>
         <li class="checklist-item">
           <input type="checkbox" id="ck4">
-          <label for="ck4"><strong>4. 系統相依套件 SBOM 檔案 (SPDX 或 CycloneDX json)</strong>：清查專案第三方套件，並具結無重大未修補 CVE 弱點。</label>
+          <label for="ck4"><strong>4. 系統相依套件 SBOM 檔案 (SPDX 或 CycloneDX json)</strong>：清查專案第三方套件，並確認已完成相應之弱點修補與分析。</label>
         </li>
         <li class="checklist-item">
           <input type="checkbox" id="ck5">
@@ -927,11 +926,11 @@ syft dir:. -o cyclonedx-json=sbom.json</code></pre>
       </ul>
 
       <div class="callout danger">
-        <strong>⚖️ 違約與不良廠商處理原則：</strong><br>
-        依工程會採購契約規定，未達修補標準者<strong>依法不得申報驗收付款</strong>；因而延誤履約期限者，每日依約計課逾期違約金。<br>
-        若因隱匿漏洞或檢測不實導致上線後遭入侵外洩，機關得依《政府採購法》第 101 條將廠商刊登為<strong>不良廠商</strong>，停權 1 至 3 年不得投標政府標案！
+        <strong>⚖️ 違約責任與履約門檻：</strong><br>
+        依工程會採購契約規定，未達修補標準者<strong>依法得暫停付款或判定驗收不合格</strong>；因而延誤履約期限者，每日依約計課逾期違約金。<br>
+        若因隱匿重大漏洞或檢測不實導致上線後遭受嚴重資安事件，除須負擔損害賠償外，機關得依《政府採購法》第 101 條等相關規定研議處置。
       </div>
-      <a href="../index.html" class="spec-ref">🔗 查看官方規範「陸、交付產出物查驗與違約處理」原文</a>
+      <a href="../index.html#sec-3" class="spec-ref">🔗 查看官方規範「參、廠商交付文件查驗對照與違約處理原則」原文</a>
     </section>
 
     <!-- 頁尾 -->

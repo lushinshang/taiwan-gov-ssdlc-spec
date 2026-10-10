@@ -390,7 +390,7 @@
     </header>
 
     <!-- 0. 廠商遵循總則與法遵拘束力說明 -->
-    <section class="content-section">
+    <section class="content-section" id="sec-0">
       <h2>零、 廠商遵循總則與法遵拘束力說明</h2>
       <div class="card">
         <p><strong>本規範為本專案委外採購契約之不可分割技術規範。</strong>受託廠商於進行本專案之程式撰寫、功能整合、測試與資安檢測期間，必須嚴格依照本程序書明定之順序推進。<strong>上一程序之安全控制與檢測報告未經機關審查核可，廠商不得逕行提報系統驗收或部署上線。</strong></p>
@@ -405,7 +405,7 @@
             <li style="margin-bottom: 6px;">
               <strong>法源依據二（防護基準法定要求）</strong>：
               依 <a class="source-link" href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=A0030304" target="_blank" rel="noopener">《資通安全責任等級分級辦法》附表十「資通系統防護基準」</a>
-              規定，各機關依附表九分級後，系統開發與維護構面<strong>明文強制要求執行原始碼檢測、弱點掃描及滲透測試</strong>，且中高風險弱點必須修補完成。
+              規定，各機關依附表九分級後，系統開發與維護構面<strong>明文強制要求執行弱點掃描，高防護等級強制執行原始碼檢測與滲透測試</strong>（中防護等級依本採購契約加嚴約定辦理），且中高風險弱點必須修補完成。
             </li>
             <li>
               <strong>契約履約依據（驗收前置條件）</strong>：
@@ -418,7 +418,7 @@
     </section>
 
     <!-- 壹、 官方下載專區與佐證文件庫 -->
-    <section class="content-section">
+    <section class="content-section" id="sec-1">
       <h2>壹、 官方依據文件與查驗表單下載庫（本地連結）</h2>
       <p>為利廠商工程團隊於開發與測試時離線參閱，本專案已將主管機關正式發布之規範原文與檢核表下載至本機 <code>downloads/</code> 目錄，點擊按鈕即可直接下載本地原檔：</p>
 
@@ -506,12 +506,12 @@
     </section>
 
     <!-- 貳、 核心作業程序：從開發到測試到資安檢測 -->
-    <section class="content-section">
+    <section class="content-section" id="sec-2">
       <h2>貳、 委外廠商核心作業程序（管理啟動 ➔ 開發 ➔ 測試 ➔ 資安檢測）</h2>
       <p>廠商專案主管、架構師、開發工程師與品保檢測團隊，必須嚴格依照下列程序循序執行：</p>
 
       <!-- 前置程序：專案管理與分工計畫 -->
-      <div class="step-card" style="border-left: 4px solid var(--primary);">
+      <div class="step-card" id="proc-0" style="border-left: 4px solid var(--primary);">
         <div class="step-card-header">
           <span class="step-heading">專案管理先行程序：專案執行計畫、工作分解 (WBS)、團隊權責 (RACI) 與風險管理 (Risk Management)</span>
           <span class="step-tag" style="background: #374151;">PMP MANAGEMENT</span>
@@ -546,11 +546,11 @@
             </li>
             <li>
               <strong>開發過程突發事故應變計畫（Incident Response Plan）</strong>：
-              依官方指引規定，開發過程中若發生原始碼外洩、開發測試伺服器遭入侵、或第三方套件爆發重大供應鏈威脅時，廠商必須啟動事故應變程序：
+              依官方指引與本案 SLA 約定，開發過程中若發生原始碼外洩、開發測試伺服器遭入侵、或第三方套件爆發重大供應鏈威脅時，廠商必須啟動事故應變程序：
               <ul style="margin-top: 4px;">
-                <li><strong>1 小時緊急通報時效</strong>：依採購契約規範，廠商知悉事件後必須於 <strong>1 小時內通報機關</strong>，並於 4 小時內提報初步隔離與損害控制方案。</li>
+                <li><strong>即時與 1 小時緊急通報時效</strong>：依採購契約規範與專案 SLA 約定，廠商知悉事件後必須於 <strong>1 小時內通報機關</strong>，並於 4 小時內提報初步隔離與損害控制方案。</li>
                 <li><strong>7x24 緊急聯絡窗口</strong>：廠商團隊必須明訂具有授權之緊急資安聯絡人，確保突發資安事故可即時啟動應變小組。</li>
-                <li><strong>事故復原與影響分析報告</strong>：事件排除後 72 小時內提送完整事故根本原因分析（RCA）及防範再發之代碼修補改善報告。</li>
+                <li><strong>事故復原與影響分析報告</strong>：事件排除後 72 小時內提送完整事故根本原因分析（RCA）及防範再發之程式碼修補改善報告。</li>
               </ul>
             </li>
           </ul>
@@ -564,7 +564,7 @@
       </div>
 
       <!-- 程序一：安全程式開發實作 -->
-      <div class="step-card">
+      <div class="step-card" id="proc-1">
         <div class="step-card-header">
           <span class="step-heading">程序一：安全程式開發實作作業（Secure Coding & Supply Chain）</span>
           <span class="step-tag">PROCEDURE 01</span>
@@ -582,7 +582,7 @@
             </li>
             <li>
               <strong>權限控制與伺服端請求防偽（A01:2025 Broken Access Control，含 SSRF）</strong>：
-              嚴格落實角色型存取控制（RBAC），且<strong>權限檢驗邏輯必須 100% 在伺服器端（Server-Side）執行</strong>，嚴禁依賴前端參數控制；對外連線請求必須建立 URL 白名單過濾，防範伺服端請求偽造（SSRF）向內網探測。
+              嚴格落實角色型存取控制（RBAC），且<strong>權限檢驗邏輯必須 100% 在伺服器端（Server-Side）執行</strong>，嚴禁依賴前端參數控制；對外連線請求必須建立 URL 網域白名單過濾並解析固定 IP，防範伺服端請求偽造（SSRF）向內網探測。
             </li>
             <li>
               <strong>安全組態加固（A02:2025 Security Misconfiguration）</strong>：
@@ -604,7 +604,7 @@
           <ul>
             <li>
               <strong>第三方開源套件管制</strong>：
-              廠商必須於開發階段建立軟體成分分析（SCA），使用開源工具（如 `Syft`、`Trivy`）掃描並產出標準格式（SPDX 或 CycloneDX）之<strong>軟體物料清單（SBOM）</strong>，比對國家 NVD / OSV 資料庫，確認無重大已知 CVE 弱點。
+              廠商必須於開發階段建立軟體成分分析（SCA），使用開源工具（如 `Syft`、`Trivy`、`Grype`）掃描並產出標準格式（SPDX 或 CycloneDX）之<strong>軟體物料清單（SBOM）</strong>，比對國家 NVD / OSV 資料庫，確認無重大已知 CVE 弱點。
             </li>
             <li>
               <strong>禁止使用大陸廠牌資通訊產品</strong>：
@@ -626,7 +626,7 @@
       </div>
 
       <!-- 程序二：功能驗證與系統整合測試 -->
-      <div class="step-card">
+      <div class="step-card" id="proc-2">
         <div class="step-card-header">
           <span class="step-heading">程序二：功能驗證與系統整合測試作業（Functional & Integration Testing）</span>
           <span class="step-tag">PROCEDURE 02</span>
@@ -655,15 +655,15 @@
           <ul>
             <li>
               <strong>測試資料選取與嚴禁真實個資（Data Sanitization）</strong>：
-              依官方《安全軟體發展流程指引》第 118-119 頁規定，測試資料必須謹慎選取，<strong>嚴禁直接複製正式環境之真實民眾個資、未去識別化資料作為開發測試之用</strong>。若因特殊業務驗證必須使用正式資料副本，必須經機關獨立專案核准，並落實遮罩、混淆（Masking）或雜湊去識別化，比照正式環境存取控制，測試完畢<strong>立即自開發磁碟中抹除</strong>。
+              依官方《安全軟體發展流程指引》第 118-119 頁規定，測試資料必須謹慎選取，<strong>優先採用合成假資料（Synthetic Data），嚴禁直接複製正式環境之真實個資作為開發測試之用</strong>。若因特殊業務驗證必須使用正式資料副本，必須經機關獨立專案核准，並落實遮罩、混淆（Masking）或雜湊去識別化，比照正式環境存取控制，測試完畢<strong>立即自開發磁碟中抹除</strong>。
             </li>
             <li>
               <strong>靜態儲存加密（Data-at-Rest Encryption）</strong>：
-              依《資通系統防護基準》第 4 頁規定，含有機密性、敏感資料之測試資料庫與開發暫存區，其磁碟區塊或資料庫欄位必須採用<strong>強固加密機制儲存</strong>（如 AES-256 全磁碟加密 FDE 或透明資料加密 TDE）。
+              依《資通系統防護基準》第 4 頁規定，高防護等級系統含有機密性、敏感資料之資料庫與暫存區，其磁碟區塊或資料庫欄位必須採用<strong>強固加密機制儲存</strong>（如 AES-256 全磁碟加密 FDE 或透明資料加密 TDE）。
             </li>
             <li>
               <strong>磁碟與儲存媒體生命週期清除作業（Media Sanitization）</strong>：
-              依官方指引第 52 頁「媒體清除規範」及工程會採購契約規定，專案開發完成、伺服器汰除、租賃主機退租或硬碟送修前，<strong>必須對儲存過專案程式碼與業務資料之磁碟執行安全清除（DoD 5220.22-M 或 NIST SP 800-88 清除標準）</strong>，消磁或重複覆寫銷毀，並產出《儲存媒體資料抹除銷毀證明切結書》，嚴禁未經抹除直接拋棄或移作他用。
+              依官方指引第 52 頁「媒體清除規範」及工程會採購契約規定，專案開發完成、伺服器汰除、租賃主機退租或硬碟送修前，<strong>必須對儲存過專案程式碼與業務資料之磁碟執行安全清除（依 NIST SP 800-88 Rev. 2 或 DoD 5220.22-M 清除標準）</strong>，消磁或覆寫銷毀，並產出《儲存媒體資料抹除銷毀證明切結書》，嚴禁未經抹除直接拋棄或移作他用。
             </li>
           </ul>
         </div>
@@ -682,7 +682,7 @@
       </div>
 
       <!-- 程序三：資訊安全技術檢測 -->
-      <div class="step-card">
+      <div class="step-card" id="proc-3">
         <div class="step-card-header">
           <span class="step-heading">程序三：資訊安全技術檢測與修補驗證作業（SAST / DAST / 滲透測試）</span>
           <span class="step-tag">PROCEDURE 03</span>
@@ -692,7 +692,7 @@
           <div class="step-block-title">🛡️ 3.1 原始碼安全檢測作業（SAST，白箱靜態檢測）</div>
           <ul>
             <li>
-              <strong>適用等級與範圍</strong>：中防護等級及高防護等級系統強制實施。檢測範圍涵蓋專案開發之所有後端、前端原始碼及預存程序（Stored Procedures）。
+              <strong>適用等級與範圍</strong>：高防護等級系統強制實施（中防護等級依本案採購契約約定實施）。檢測範圍涵蓋專案開發之所有後端、前端原始碼及預存程序（Stored Procedures）。
             </li>
             <li>
               <strong>合格修補標準</strong>：
@@ -715,14 +715,14 @@
         </div>
 
         <div class="step-block">
-          <div class="step-block-title">⚔️ 3.3 滲透測試作業（Penetration Testing，模擬黑客攻擊）</div>
+          <div class="step-block-title">⚔️ 3.3 滲透測試作業（Penetration Testing，模擬駭客攻擊）</div>
           <ul>
             <li>
-              <strong>適用等級與資格</strong>：中、高防護等級系統或提供民眾對外服務之核心系統強制實施。必須由持有公信力資安證照（如 OSCP、CEH、GWAPT 或同等實力）之資安測試人員執行。
+              <strong>適用等級與資格</strong>：高防護等級系統或提供民眾對外服務之核心系統強制實施（中防護等級依本案契約約定辦理）。必須由持有公信力資安證照（如 OSCP、CEH、GWAPT 或同等實力）之資安測試人員執行。
             </li>
             <li>
               <strong>報告必備要件（拒收空泛報告）</strong>：
-              滲透測試報告必須具備：(1) 測試範疇與受測 IP/URL、(2) 弱點分類與 CVSS 3.1 評分、(3) <strong>概念驗證（PoC）重現步驟與攻擊截圖</strong>、(4) 具體代碼修正或組態補強建議、(5) 修補後複測通過佐證。
+              滲透測試報告必須具備：(1) 測試範疇與受測 IP/URL、(2) 弱點分類與 CVSS 3.1 評分、(3) <strong>概念驗證（PoC）重現步驟與攻擊截圖</strong>、(4) 具體程式碼修正或組態補強建議、(5) 修補後複測通過佐證。
             </li>
           </ul>
         </div>
@@ -734,7 +734,7 @@
           <ul style="margin-top: 4px; padding-left: 20px;">
             <li>工具出具之《原始碼安全檢測報告（SAST）》及修復確認對照單。</li>
             <li>《系統與 Web 應用程式弱點掃描報告（DAST）》及複測合格證明。</li>
-            <li>《滲透測試報告（含完整 PoC 與修補複測）》（適用中高防護等級系統）。</li>
+            <li>《滲透測試報告（含完整 PoC 與修補複測）》（適用高防護或契約約定系統）。</li>
             <li>已填妥之 <a class="btn-download doc-check" href="downloads/附件1_資通系統防護基準檢核表v1.3_1150603.docx" download>《附件1 資通系統防護基準檢核表.docx》</a>。</li>
           </ul>
         </div>
@@ -742,7 +742,7 @@
     </section>
 
     <!-- 參、 廠商履約檢核清單與罰則條款 -->
-    <section class="content-section">
+    <section class="content-section" id="sec-3">
       <h2>參、 廠商交付文件查驗對照與違約處理原則</h2>
       <div class="card">
         <p>為利機關專案承辦人員勾稽審查，廠商於各程序應交付之文件與機關裁量標準彙整如下：</p>
