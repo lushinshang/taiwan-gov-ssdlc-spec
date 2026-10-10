@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資訊系統安全開發與資安檢測作業規範（委外廠商執行程序書）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #f9f7f4;
+      --bg-card: #ffffff;
+      --text-main: #1a1a1a;
+      --text-muted: #4b5563;
+      --text-light: #6b7280;
+      --primary: #005a9c;
+      --primary-hover: #004375;
+      --primary-light: #e6f0fa;
+      --accent-green: #047857;
+      --accent-green-bg: #ecfdf5;
+      --accent-amber: #b45309;
+      --accent-amber-bg: #fffbeb;
+      --accent-red: #b91c1c;
+      --accent-red-bg: #fef2f2;
+      --border-color: #e5e0d8;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      padding: 24px 16px 80px;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .doc-header {
+      max-width: 880px;
+      margin: 0 auto 36px;
+      text-align: center;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 999px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .badge.law {
+      background: var(--accent-red-bg);
+      color: var(--accent-red);
+      border: 1px solid #fecaca;
+    }
+
+    .badge.verified {
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      border: 1px solid #a7f3d0;
+    }
+
+    h1 {
+      font-size: clamp(1.85rem, 3.6vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.3;
+      color: #111827;
+      margin-bottom: 14px;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      font-size: 1.12rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      text-wrap: balance;
+    }
+
+    .meta-box {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* Content Layout */
+    .content-section {
+      max-width: 900px;
+      margin: 0 auto 48px;
+    }
+
+    h2 {
+      font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+      font-weight: 700;
+      color: #111827;
+      margin: 36px 0 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary-light);
+      text-wrap: balance;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3 {
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 24px 0 12px;
+    }
+
+    p {
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: #f0f6fc;
+      padding: 16px 20px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 18px 0;
+      font-size: 0.96rem;
+    }
+    .callout.alert-red {
+      border-left-color: var(--accent-red);
+      background: var(--accent-red-bg);
+    }
+    .callout.alert-green {
+      border-left-color: var(--accent-green);
+      background: var(--accent-green-bg);
+    }
+    .callout.alert-amber {
+      border-left-color: var(--accent-amber);
+      background: var(--accent-amber-bg);
+    }
+
+    /* Links & Buttons */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      margin: 4px 4px 4px 0;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: #ffffff;
+      color: var(--primary);
+      border: 1px solid #93c5fd;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-download:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-download.doc-check {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+    .btn-download.doc-check:hover {
+      background: #047857;
+      color: #ffffff;
+    }
+
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      margin: 0 2px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: #eef2ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+      border-radius: 4px;
+      text-decoration: none;
+      vertical-align: baseline;
+    }
+    .source-link:hover {
+      background: #e0e7ff;
+      color: #1e1b4b;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 999px;
+      background: #d1fae5;
+      color: #065f46;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Procedure Steps (Vertical Flow for Mobile) */
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .step-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .step-tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .step-heading {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .step-block {
+      margin-bottom: 16px;
+    }
+    .step-block-title {
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-block ul {
+      padding-left: 20px;
+      color: var(--text-muted);
+    }
+    .step-block li {
+      margin-bottom: 8px;
+    }
+
+    .evidence-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #111827;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    footer {
+      max-width: 880px;
+      margin: 60px auto 0;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-light);
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px 12px 60px;
+      }
+      .card, .step-card {
+        padding: 16px;
+      }
+      .step-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="doc-header">
+      <div class="badge-bar">
+        <span class="badge law">⚖️ 專案契約法定履約規範</span>
+        <span class="badge verified">✓ 全數官方文件已完成本地下載備份</span>
+        <span class="badge">SSDLC 實作核心（開發至資安檢測）</span>
+      </div>
+      <h1>資訊系統安全開發與資安檢測作業規範</h1>
+      <p class="subtitle">依據《資通安全管理法》第9條及其施行細則、《資通系統防護基準》及工程會採購契約範本，專門規範受託廠商於「程式開發實作」、「功能與系統測試」至「資訊安全技術檢測（SAST/DAST/滲透測試）」之執行程序、安全標準與交付審查</p>
+      
+      <div class="meta-box">
+        <span>規範範疇：安全程式設計 ➔ 軟體供應鏈(SBOM) ➔ 白箱源碼掃描 ➔ 黑箱弱掃 ➔ 滲透測試</span>
+        <span>文件責任：機關資通安全主管與承辦工程師</span>
+      </div>
+    </header>
+
+    <!-- 0. 廠商遵循總則與法遵拘束力說明 -->
+    <section class="content-section">
+      <h2>零、 廠商遵循總則與法遵拘束力說明</h2>
+      <div class="card">
+        <p><strong>本規範為本專案委外採購契約之不可分割技術規範。</strong>受託廠商於進行本專案之程式撰寫、功能整合、測試與資安檢測期間，必須嚴格依照本程序書明定之順序推進。<strong>上一程序之安全控制與檢測報告未經機關審查核可，廠商不得逕行提報系統驗收或部署上線。</strong></p>
+        
+        <div class="callout alert-red">
+          <strong>⚖️ 法遵依據與法律拘束力宣告（契約履約強制力）：</strong>
+          <ul style="margin-top: 8px; padding-left: 20px;">
+            <li style="margin-bottom: 6px;">
+              <strong>法源依據一（母法委外選任與監督義務）</strong>：
+              依 <a class="source-link" href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=A0030297" target="_blank" rel="noopener">《資通安全管理法》第 9 條及施行細則第 7 條</a> 規定，機關委外辦理資通系統之建置、維運或資通服務，應選任具備資安防護能力之廠商，並於契約明訂監督與稽核權；受託者辦理客製化開發必須提供安全性檢測證明。
+            </li>
+            <li style="margin-bottom: 6px;">
+              <strong>法源依據二（防護基準法定要求）</strong>：
+              依 <a class="source-link" href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=A0030304" target="_blank" rel="noopener">《資通安全責任等級分級辦法》附表十「資通系統防護基準」</a>
+              規定，各機關依附表九分級後，系統開發與維護構面<strong>明文強制要求執行原始碼檢測、弱點掃描及滲透測試</strong>，且中高風險弱點必須修補完成。
+            </li>
+            <li>
+              <strong>契約履約依據（驗收前置條件）</strong>：
+              依 <a class="source-link" href="https://www.pcc.gov.tw/content/index?type=C&eid=9819" target="_blank" rel="noopener">行政院公共工程委員會《資訊服務採購契約範本》</a> 
+              第 8 條履約管理、第 15 條及第 16 條驗收規定，受託廠商未出具合格之資安檢測報告並修復中高風險漏洞前，機關<strong>依契約約定得暫停付款或判定驗收不合格</strong>。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 壹、 官方下載專區與佐證文件庫 -->
+    <section class="content-section">
+      <h2>壹、 官方依據文件與查驗表單下載庫（本地連結）</h2>
+      <p>為利廠商工程團隊於開發與測試時離線參閱，本專案已將主管機關正式發布之規範原文與檢核表下載至本機 <code>downloads/</code> 目錄，點擊按鈕即可直接下載本地原檔：</p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>文件 / 表單名稱</th>
+              <th>主管機關與標準版本</th>
+              <th>格式</th>
+              <th>本地下載連結（專案內原檔）</th>
+              <th>法規與技術依據說明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>附表十 資通系統防護基準 (最新版)</strong></td>
+              <td>數位發展部（分級辦法附表）<br>最新 115.01.07 修正</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/附表十_資通系統防護基準.pdf" download>📥 附表十_防護基準.pdf</a></td>
+              <td>法定強制條款。規範存取控制(AC)、系統與服務獲得之安全測試要求。</td>
+            </tr>
+            <tr>
+              <td><strong>附表九 資通系統防護需求分級原則</strong></td>
+              <td>數位發展部（分級辦法附表）</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/附表九_資通系統防護需求分級原則.pdf" download>📥 附表九_分級原則.pdf</a></td>
+              <td><strong>機關法定評定依據</strong>。由機關完成機密性(C)、完整性(I)、可用性(A)衝擊分析並核定系統等級（普/中/高），廠商據以落實對應之檢測深度。</td>
+            </tr>
+            <tr>
+              <td><strong>Web 應用程式安全查檢表 (最新版)</strong></td>
+              <td>國家資通安全研究院 (NICS)<br>v3.2 官方獨立附件</td>
+              <td>PDF</td>
+              <td><a class="btn-download doc-check" href="downloads/附件1_Web應用程式安全查檢表.pdf" download>📋 附件1_Web安全查檢表.pdf</a></td>
+              <td><strong>廠商開發階段必填！</strong>涵蓋注入、權限控制、密碼學等逐項查核點。</td>
+            </tr>
+            <tr>
+              <td><strong>Web 應用程式安全參考指引 (全文)</strong></td>
+              <td>國家資通安全研究院 (NICS)<br>v3.2 (114.12.31 修編)</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/Web應用程式安全參考指引.pdf" download>📥 Web安全指引全文.pdf</a></td>
+              <td>防範 OWASP Top 10 與參數化查詢、HTTP 標頭設定之權威技術指引。</td>
+            </tr>
+            <tr>
+              <td><strong>資通系統防護基準檢核表 (v1.3)</strong></td>
+              <td>國家資通安全研究院 (NICS)<br>115.06.03 最新修訂</td>
+              <td>Word (.docx)</td>
+              <td><a class="btn-download doc-check" href="downloads/附件1_資通系統防護基準檢核表v1.3_1150603.docx" download>📝 防護基準檢核表.docx</a></td>
+              <td><strong>官方可編輯 Word 檢核表！</strong>驗收時逐條核對源碼掃描與弱點掃描紀錄。</td>
+            </tr>
+            <tr>
+              <td><strong>安全軟體測試參考指引 (全文)</strong></td>
+              <td>國家資通安全研究院 (技服中心)<br>v1.0 官方技術指引</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/103年安全軟體測試參考指引v1.0_1031231.pdf" download>📥 安全軟體測試指引.pdf</a></td>
+              <td>規範白箱靜態檢測 (SAST)、黑箱動態測試 (DAST) 與測試案例設計方法。</td>
+            </tr>
+            <tr>
+              <td><strong>安全軟體設計參考指引 (全文)</strong></td>
+              <td>國家資通安全研究院 (技服中心)<br>v1.0 官方技術指引</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/103年安全軟體設計參考指引v1.0_1031031.pdf" download>📥 安全軟體設計指引.pdf</a></td>
+              <td>規範 RBAC 角色授權、伺服端校驗與身分驗證架構防護。</td>
+            </tr>
+            <tr>
+              <td><strong>資訊服務採購契約範本 (最新 1131226)</strong></td>
+              <td>行政院公共工程委員會<br>113.12.26 最新版</td>
+              <td>ODT / PDF</td>
+              <td>
+                <a class="btn-download" href="downloads/資訊服務採購契約範本_1131226.odt" download>📥 契約範本.odt</a>
+                <a class="btn-download" href="downloads/資訊服務採購契約範本_1131226.pdf" download>📥 契約範本.pdf</a>
+              </td>
+              <td>政府採購強制契約。附件包含《各類資訊採購共通性資通安全基本要求》。</td>
+            </tr>
+            <tr>
+              <td><strong>HTTP 安全標頭防護設定指南</strong></td>
+              <td>國家資通安全研究院 (NICS)<br>v3.2 官方專題附件</td>
+              <td>PDF</td>
+              <td><a class="btn-download" href="downloads/附件3 HTTP安全標頭防護設定.pdf" download>📥 HTTP安全標頭設定.pdf</a></td>
+              <td>規範 HSTS、CSP、X-Frame-Options、X-Content-Type-Options 實作。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 貳、 核心作業程序：從開發到測試到資安檢測 -->
+    <section class="content-section">
+      <h2>貳、 委外廠商核心作業程序（管理啟動 ➔ 開發 ➔ 測試 ➔ 資安檢測）</h2>
+      <p>廠商專案主管、架構師、開發工程師與品保檢測團隊，必須嚴格依照下列程序循序執行：</p>
+
+      <!-- 前置程序：專案管理與分工計畫 -->
+      <div class="step-card" style="border-left: 4px solid var(--primary);">
+        <div class="step-card-header">
+          <span class="step-heading">專案管理先行程序：專案執行計畫、工作分解 (WBS)、團隊權責 (RACI) 與風險管理 (Risk Management)</span>
+          <span class="step-tag" style="background: #374151;">PMP MANAGEMENT</span>
+        </div>
+        <div class="step-block">
+          <div class="step-block-title">📌 契約法遵與專案分工強制要求：</div>
+          <p style="font-size: 0.93rem; color: var(--text-muted); margin-bottom: 8px;">
+            依據工程會《資訊服務採購契約範本》第 8 條第 2 款第 1 目規定，廠商應於決標後 20 日內提報《專案工作執行計畫書》。本專案特別要求該計畫書必須具備結構化之 <strong>WBS</strong>、<strong>RACI</strong> 與 <strong>風險管理計畫（Risk Register）</strong>，以落實資安法之職能分工（SoD）與風險預警機制：
+          </p>
+          <ul>
+            <li>
+              <strong>工作分解結構（WBS, Work Breakdown Structure）</strong>：
+              廠商必須將整個軟體開發、組態建置、第三方套件清點（SBOM）、單元測試、整合測試、原始碼掃描（SAST）、弱點掃描（DAST）與滲透測試修補，拆解至可獨立驗收與指派負責人之第三層以上 WBS 工作包（Work Packages）。
+            </li>
+            <li>
+              <strong>責任分工矩陣（RACI Matrix）</strong>：
+              必須明確界定每一項資安工作之角色：
+              <strong>R（Responsible 執行者）</strong>、
+              <strong>A（Accountable 當責者/最終簽核PM）</strong>、
+              <strong>C（Consulted 諮詢者/資安架構師）</strong>、
+              <strong>I（Informed 知會者/機關承辦）</strong>。
+              嚴格杜絕「開發兼檢測」、「自己掃描自己審查」等違反職能分工（Separation of Duties）之弊病。
+            </li>
+            <li>
+              <strong>專案與資安風險管理機制（Risk Management & Risk Register）</strong>：
+              廠商必須建立專案風險登錄表（Risk Register），識別並預防三大核心風險構面：
+              <ul style="margin-top: 4px;">
+                <li><strong>時程風險</strong>：資安檢測（SAST/DAST）掃描出大量中高風險漏洞，導致修補複測時程嚴重延誤交付。廠商應明訂預備緩衝期（Buffer）與資安技術專家支援機制。</li>
+                <li><strong>技術與供應鏈風險</strong>：關鍵第三方開源套件突發零日漏洞（0-Day）、套件過時無法修補或受大陸廠牌管制衝擊之替代方案。</li>
+                <li><strong>人因與資安事件風險</strong>：專案成員流動導致機敏金鑰外洩、或開發測試環境遭受勒索病毒感染之應變處置。</li>
+              </ul>
+            </li>
+            <li>
+              <strong>開發過程突發事故應變計畫（Incident Response Plan）</strong>：
+              依官方指引規定，開發過程中若發生原始碼外洩、開發測試伺服器遭入侵、或第三方套件爆發重大供應鏈威脅時，廠商必須啟動事故應變程序：
+              <ul style="margin-top: 4px;">
+                <li><strong>1 小時緊急通報時效</strong>：依採購契約規範，廠商知悉事件後必須於 <strong>1 小時內通報機關</strong>，並於 4 小時內提報初步隔離與損害控制方案。</li>
+                <li><strong>7x24 緊急聯絡窗口</strong>：廠商團隊必須明訂具有授權之緊急資安聯絡人，確保突發資安事故可即時啟動應變小組。</li>
+                <li><strong>事故復原與影響分析報告</strong>：事件排除後 72 小時內提送完整事故根本原因分析（RCA）及防範再發之代碼修補改善報告。</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="evidence-box">
+          <strong>📑 依據法源與交付標準：</strong><br>
+          • 契約依據：<a class="source-link" href="downloads/資訊服務採購契約範本_1131226.pdf">工程會《資訊服務採購契約範本》第8條履約管理與資安事件通報條款</a>。<br>
+          • 官方指引：<a class="source-link" href="downloads/103年安全軟體發展流程指引v1.0_1030630.pdf">《安全軟體發展流程指引》</a> 第 28 頁「事故應變計畫」與第 63 頁「威脅建模與風險消除對策」。<br>
+          • 審查交付物：<strong>《專案工作執行計畫書》（內含 WBS 時程甘特圖、RACI 資安責任分工表、風險登錄表 Risk Register 與 突發事故應變程序書）</strong>。
+        </div>
+      </div>
+
+      <!-- 程序一：安全程式開發實作 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-heading">程序一：安全程式開發實作作業（Secure Coding & Supply Chain）</span>
+          <span class="step-tag">PROCEDURE 01</span>
+        </div>
+        
+        <div class="step-block">
+          <div class="step-block-title">🛠️ 1.1 安全程式碼撰寫強制要求（全面對齊最新 OWASP Top 10）</div>
+          <div style="font-size: 0.88rem; color: var(--primary); margin-bottom: 8px; font-weight: 600;">
+            💡 國際標準動態：OWASP 已正式發布第八代旗艦版本 <strong>OWASP Top 10:2025</strong>，特別將「軟體供應鏈失效（A03）」與「例外處理不當（A10）」列為獨立風險，並將 SSRF 收編至「權限控制失效（A01）」。本專案要求全面對齊最新版本防禦控制：
+          </div>
+          <ul>
+            <li>
+              <strong>徹底根絕注入弱點（A05:2025 Injection，含 SQLi / XSS）</strong>：
+              所有資料庫存取必須全面採用<strong>參數化查詢（Prepared Statements / Parameterized Queries）</strong>或經安全驗證之 ORM 框架，<strong>嚴格禁止使用字串拼接（String Concatenation）組裝 SQL 語法</strong>；所有前端輸出至瀏覽器前必須執行上下文敏感之輸出編碼（Output Encoding）。
+            </li>
+            <li>
+              <strong>權限控制與伺服端請求防偽（A01:2025 Broken Access Control，含 SSRF）</strong>：
+              嚴格落實角色型存取控制（RBAC），且<strong>權限檢驗邏輯必須 100% 在伺服器端（Server-Side）執行</strong>，嚴禁依賴前端參數控制；對外連線請求必須建立 URL 白名單過濾，防範伺服端請求偽造（SSRF）向內網探測。
+            </li>
+            <li>
+              <strong>安全組態加固（A02:2025 Security Misconfiguration）</strong>：
+              Web 系統必須依官方指引啟用安全標頭（`Strict-Transport-Security`、`X-Content-Type-Options: nosniff`、`X-Frame-Options: SAMEORIGIN` 及 `Content-Security-Policy`），正式環境強制關閉除錯模式（Debug Mode）與多餘預設端點。
+            </li>
+            <li>
+              <strong>密碼學與機敏資訊保護（A04:2025 Cryptographic Failures）</strong>：
+              嚴禁在原始碼、組態檔或 Git 紀錄中硬編碼（Hard-coded）帳號密碼、API 金鑰或憑證。使用者密碼儲存必須採用<strong>強固雜湊演算法加鹽（Salted Hash，如 PBKDF2、bcrypt 或 Argon2id）</strong>，嚴禁使用 MD5 或 SHA-1。
+            </li>
+            <li>
+              <strong>例外與錯誤狀況安全處理（A10:2025 Mishandling of Exceptional Conditions）</strong>：
+              所有 API 與控制器必須建立健全之全域例外捕捉機制，錯誤訊息嚴禁將資料庫錯誤碼、框架底層堆疊追蹤資訊（Stack Trace）回傳給前端使用者。
+            </li>
+          </ul>
+        </div>
+
+        <div class="step-block">
+          <div class="step-block-title">📦 1.2 軟體供應鏈安全與產出 SBOM 清單</div>
+          <ul>
+            <li>
+              <strong>第三方開源套件管制</strong>：
+              廠商必須於開發階段建立軟體成分分析（SCA），使用開源工具（如 `Syft`、`Trivy`）掃描並產出標準格式（SPDX 或 CycloneDX）之<strong>軟體物料清單（SBOM）</strong>，比對國家 NVD / OSV 資料庫，確認無重大已知 CVE 弱點。
+            </li>
+            <li>
+              <strong>禁止使用大陸廠牌資通訊產品</strong>：
+              依行政院政策規定，廠商交付之軟體套件、第三方相依模組或開發環境，<strong>一律嚴格禁止採用大陸廠牌資通訊產品或具安全疑慮之模組</strong>。
+            </li>
+          </ul>
+        </div>
+
+        <div class="evidence-box">
+          <strong>📑 本程序依據文件與廠商應交付審查物：</strong><br>
+          1. 依據文件：<a class="source-link" href="downloads/Web應用程式安全參考指引.pdf">《Web 應用程式安全參考指引 v3.2》</a> 及 <a class="source-link" href="downloads/附件3 HTTP安全標頭防護設定.pdf">《HTTP 安全標頭防護設定》</a>。<br>
+          2. <strong>廠商應交付審查物</strong>：
+          <ul style="margin-top: 4px; padding-left: 20px;">
+            <li>已填報勾稽完成之 <a class="btn-download doc-check" href="downloads/附件1_Web應用程式安全查檢表.pdf" download>《附件1 Web應用程式安全查檢表.pdf》</a>。</li>
+            <li>系統相依套件清冊與標準 <strong>SBOM 檔案（SPDX / CycloneDX json）</strong>。</li>
+            <li>廠商具結之《無大陸廠牌資通訊產品切結書》。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 程序二：功能驗證與系統整合測試 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-heading">程序二：功能驗證與系統整合測試作業（Functional & Integration Testing）</span>
+          <span class="step-tag">PROCEDURE 02</span>
+        </div>
+        
+        <div class="step-block">
+          <div class="step-block-title">🧪 2.1 測試環境與安全功能驗證</div>
+          <ul>
+            <li>
+              <strong>測試環境獨立隔離</strong>：
+              系統測試作業必須在獨立之測試環境進行，測試環境應與開發環境及未來正式營運環境實體或邏輯隔離。<strong>嚴禁在測試環境中使用未去識別化之真實民眾個資</strong>。
+            </li>
+            <li>
+              <strong>安全邊界與異常輸入測試</strong>：
+              測試案例必須包含負向測試（Negative Testing）與極限邊界測試，包含超長字串、特殊符號、SQL 語法注入、非預期型態之輸入驗證，確認系統具備適當之例外處理（Exception Handling），不會洩漏系統堆疊追蹤資訊（Stack Trace）或伺服器敏感情資。
+            </li>
+            <li>
+              <strong>存取控制邏輯測試</strong>：
+              驗證跨使用者之垂直越權（一般使用者試圖呼叫管理員 API）與水平越權（使用者 A 竄改參數存取使用者 B 之資料），確認 RBAC 授權機制在每支 API 均完整生效。
+            </li>
+          </ul>
+        </div>
+
+        <div class="step-block">
+          <div class="step-block-title">💾 2.2 開發與測試過程「資料／數據及儲存媒體（磁碟）」安全管理與生命週期規範</div>
+          <ul>
+            <li>
+              <strong>測試資料選取與嚴禁真實個資（Data Sanitization）</strong>：
+              依官方《安全軟體發展流程指引》第 118-119 頁規定，測試資料必須謹慎選取，<strong>嚴禁直接複製正式環境之真實民眾個資、未去識別化資料作為開發測試之用</strong>。若因特殊業務驗證必須使用正式資料副本，必須經機關獨立專案核准，並落實遮罩、混淆（Masking）或雜湊去識別化，比照正式環境存取控制，測試完畢<strong>立即自開發磁碟中抹除</strong>。
+            </li>
+            <li>
+              <strong>靜態儲存加密（Data-at-Rest Encryption）</strong>：
+              依《資通系統防護基準》第 4 頁規定，含有機密性、敏感資料之測試資料庫與開發暫存區，其磁碟區塊或資料庫欄位必須採用<strong>強固加密機制儲存</strong>（如 AES-256 全磁碟加密 FDE 或透明資料加密 TDE）。
+            </li>
+            <li>
+              <strong>磁碟與儲存媒體生命週期清除作業（Media Sanitization）</strong>：
+              依官方指引第 52 頁「媒體清除規範」及工程會採購契約規定，專案開發完成、伺服器汰除、租賃主機退租或硬碟送修前，<strong>必須對儲存過專案程式碼與業務資料之磁碟執行安全清除（DoD 5220.22-M 或 NIST SP 800-88 清除標準）</strong>，消磁或重複覆寫銷毀，並產出《儲存媒體資料抹除銷毀證明切結書》，嚴禁未經抹除直接拋棄或移作他用。
+            </li>
+          </ul>
+        </div>
+
+        <div class="evidence-box">
+          <strong>📑 本程序依據文件與廠商應交付審查物：</strong><br>
+          1. 依據法規：<a class="source-link" href="downloads/附表十_資通系統防護基準.pdf">《附表十 資通系統防護基準》</a> 第 4 頁「資料儲存」與「環境區隔」規定。<br>
+          2. 指引出處：<a class="source-link" href="downloads/103年安全軟體發展流程指引v1.0_1030630.pdf">《安全軟體發展流程指引》</a> 第 52 頁「媒體清除」及第 118-119 頁「測試資料保護」。<br>
+          3. <strong>廠商應交付審查物</strong>：
+          <ul style="margin-top: 4px; padding-left: 20px;">
+            <li>系統整合測試計畫書與安全功能測試案例（Test Cases）。</li>
+            <li>測試資料去識別化與保護宣告書。</li>
+            <li>專案結束時提送之《儲存媒體資料安全抹除銷毀紀錄切結書》。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 程序三：資訊安全技術檢測 -->
+      <div class="step-card">
+        <div class="step-card-header">
+          <span class="step-heading">程序三：資訊安全技術檢測與修補驗證作業（SAST / DAST / 滲透測試）</span>
+          <span class="step-tag">PROCEDURE 03</span>
+        </div>
+        
+        <div class="step-block">
+          <div class="step-block-title">🛡️ 3.1 原始碼安全檢測作業（SAST，白箱靜態檢測）</div>
+          <ul>
+            <li>
+              <strong>適用等級與範圍</strong>：中防護等級及高防護等級系統強制實施。檢測範圍涵蓋專案開發之所有後端、前端原始碼及預存程序（Stored Procedures）。
+            </li>
+            <li>
+              <strong>合格修補標準</strong>：
+              掃描報告中標註為<strong>「高風險（High / Critical）」與「中風險（Medium）」之漏洞，必須全數（100%）完成修補</strong>。若廠商主張特定項目為工具誤判（False Positive），必須檢附原始碼行號、上下文邏輯分析佐證，經機關資安人員審查核可後方得列入除外清單。
+            </li>
+          </ul>
+        </div>
+
+        <div class="step-block">
+          <div class="step-block-title">🌐 3.2 系統與應用程式弱點掃描作業（DAST，黑箱動態檢測）</div>
+          <ul>
+            <li>
+              <strong>適用等級與範圍</strong>：所有資通系統（普、中、高）皆強制實施。包含作業系統主機、網頁伺服器（Web Server）、資料庫及 Web 應用程式對外服務埠口。
+            </li>
+            <li>
+              <strong>合格修補標準</strong>：
+              所有掃描發現之<strong>中、高風險弱點必須於申報驗收前全數修復</strong>，並於修補後進行複測，出具修復後無中高風險漏洞之「複測合格報告」。
+            </li>
+          </ul>
+        </div>
+
+        <div class="step-block">
+          <div class="step-block-title">⚔️ 3.3 滲透測試作業（Penetration Testing，模擬黑客攻擊）</div>
+          <ul>
+            <li>
+              <strong>適用等級與資格</strong>：中、高防護等級系統或提供民眾對外服務之核心系統強制實施。必須由持有公信力資安證照（如 OSCP、CEH、GWAPT 或同等實力）之資安測試人員執行。
+            </li>
+            <li>
+              <strong>報告必備要件（拒收空泛報告）</strong>：
+              滲透測試報告必須具備：(1) 測試範疇與受測 IP/URL、(2) 弱點分類與 CVSS 3.1 評分、(3) <strong>概念驗證（PoC）重現步驟與攻擊截圖</strong>、(4) 具體代碼修正或組態補強建議、(5) 修補後複測通過佐證。
+            </li>
+          </ul>
+        </div>
+
+        <div class="evidence-box">
+          <strong>📑 本程序依據文件與廠商應交付審查物：</strong><br>
+          1. 依據法規：<a class="source-link" href="downloads/附表十_資通系統防護基準.pdf">《附表十 資通系統防護基準》</a> 系統發展與維護構面、<a class="source-link" href="downloads/資訊服務採購契約範本_1131226.pdf">工程會契約範本第8條</a>。<br>
+          2. <strong>廠商應交付審查物（驗收必備）</strong>：
+          <ul style="margin-top: 4px; padding-left: 20px;">
+            <li>工具出具之《原始碼安全檢測報告（SAST）》及修復確認對照單。</li>
+            <li>《系統與 Web 應用程式弱點掃描報告（DAST）》及複測合格證明。</li>
+            <li>《滲透測試報告（含完整 PoC 與修補複測）》（適用中高防護等級系統）。</li>
+            <li>已填妥之 <a class="btn-download doc-check" href="downloads/附件1_資通系統防護基準檢核表v1.3_1150603.docx" download>《附件1 資通系統防護基準檢核表.docx》</a>。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 參、 廠商履約檢核清單與罰則條款 -->
+    <section class="content-section">
+      <h2>參、 廠商交付文件查驗對照與違約處理原則</h2>
+      <div class="card">
+        <p>為利機關專案承辦人員勾稽審查，廠商於各程序應交付之文件與機關裁量標準彙整如下：</p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>作業程序</th>
+                <th>廠商應提送關鍵交付物</th>
+                <th>機關審查合格標準</th>
+                <th>未達標準之處置與罰則</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>程序一：安全開發</strong></td>
+                <td>
+                  1. Web 應用程式安全查檢表<br>
+                  2. SBOM 軟體物料清單 (SPDX/CycloneDX)<br>
+                  3. 無大陸廠牌切結書
+                </td>
+                <td>
+                  • 查檢表各防護項逐一填寫自評<br>
+                  • SBOM 套件無重大已知 CVE<br>
+                  • 全系統 100% 無大陸廠牌
+                </td>
+                <td>
+                  未提送者<strong>禁止進行整合測試</strong>。<br>
+                  查獲採用大陸廠牌者，依法終止契約並追償損失。
+                </td>
+              </tr>
+              <tr>
+                <td><strong>程序二：系統測試</strong></td>
+                <td>
+                  1. 系統整合測試計畫書<br>
+                  2. 安全功能與邊界測試案例<br>
+                  3. 測試通過紀錄報告
+                </td>
+                <td>
+                  • 測試案例涵蓋 SQLi/XSS/RBAC 越權<br>
+                  • 測試環境與正式環境完全隔離<br>
+                  • 敏感個資已完成遮罩或去識別化
+                </td>
+                <td>
+                  測試覆蓋率不足或越權檢驗未過者退件重測。
+                </td>
+              </tr>
+              <tr>
+                <td><strong>程序三：資安檢測</strong></td>
+                <td>
+                  1. 原始碼檢測報告 (SAST)<br>
+                  2. 弱點掃描與複測報告 (DAST)<br>
+                  3. 滲透測試報告 (中高防護必備)<br>
+                  4. 防護基準檢核表 (Word)
+                </td>
+                <td>
+                  • <strong>高、中風險漏洞修補率達 100%</strong><br>
+                  • 具備完整漏洞修補前後對照截圖<br>
+                  • 防護基準檢核表逐項完成符合性確認
+                </td>
+                <td>
+                  未達成 100% 修補者<strong>依法不得申報驗收付款</strong>；<br>
+                  因而延誤履約期限者，每日按契約總價依約計課逾期違約金。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout alert-amber">
+          <strong>⚠️ 驗收裁量法規依據特別提示：</strong>
+          依工程會《資訊服務採購契約範本》第 15 條及第 17 條規定，若廠商因未依指引撰寫安全程式、未修復已知安全弱點或檢測不實，致使系統交付後遭受滲透入侵或遭主管機關資安稽核判定為重大缺失，廠商除須負擔無償修復及資安事件損害賠償外，機關得依《政府採購法》第 101 條將其刊登為不良廠商列管。
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>本作業規範依據數位發展部《資通系統防護基準》、國家資通安全研究院《Web應用程式安全指引》與工程會採購契約範本編製</p>
+      <p style="margin-top: 6px;">所有依據文件皆已下載保存在本地 <code>downloads/</code> 資料夾中，具備法律拘束力與完整技術追溯性</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
